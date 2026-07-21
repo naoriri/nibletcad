@@ -7,8 +7,12 @@ import os
 
 app = FastAPI(
     title="Niblet CAD API",
-    version="3.0.0"
+    version="4.0.0"
 )
+
+OUTPUT_DIR = os.path.join(tempfile.gettempdir(), "generated_models")
+os.makedirs(OUTPUT_DIR, exist_ok=True)
+
 
 class GenerateRequest(BaseModel):
     product: str
@@ -27,8 +31,8 @@ def root():
 @app.post("/generate")
 def generate(request: GenerateRequest):
 
-    # Temporary proof that CadQuery is working.
-    # We'll replace this with a real cat generator next.
+    # Temporary placeholder.
+    # Later GPT will generate the actual geometry.
 
     model = (
         cq.Workplane("XY")
@@ -37,9 +41,27 @@ def generate(request: GenerateRequest):
     )
 
     filename = f"{request.subject}_{request.product}.stl"
-    filepath = os.path.join(tempfile.gettempdir(), filename)
+    filepath = os.path.join(OUTPUT_DIR, filename)
 
     cq.exporters.export(model, filepath)
+
+    return {
+        "success": True,
+        "filename": filename,
+        "download_url": f"/files/{filename}"
+    }
+
+
+@app.get("/files/{filename}")
+def download_file(filename: str):
+
+    filepath = os.path.join(OUTPUT_DIR, filename)
+
+    if not os.path.exists(filepath):
+        return {
+            "success": False,
+            "message": "File not found."
+        }
 
     return FileResponse(
         path=filepath,
