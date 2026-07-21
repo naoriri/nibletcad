@@ -7,11 +7,13 @@ import os
 
 app = FastAPI(
     title="Niblet CAD API",
-    version="4.0.0"
+    version="4.1.0"
 )
 
 OUTPUT_DIR = os.path.join(tempfile.gettempdir(), "generated_models")
 os.makedirs(OUTPUT_DIR, exist_ok=True)
+
+BASE_URL = "https://niblet-cad-api-984036042518.asia-southeast1.run.app"
 
 
 class GenerateRequest(BaseModel):
@@ -31,8 +33,8 @@ def root():
 @app.post("/generate")
 def generate(request: GenerateRequest):
 
-    # Temporary placeholder.
-    # Later GPT will generate the actual geometry.
+    # Temporary placeholder geometry.
+    # This will later be replaced with the real AI-generated design.
 
     model = (
         cq.Workplane("XY")
@@ -48,7 +50,7 @@ def generate(request: GenerateRequest):
     return {
         "success": True,
         "filename": filename,
-        "download_url": f"/files/{filename}"
+        "download_url": f"{BASE_URL}/files/{filename}"
     }
 
 
