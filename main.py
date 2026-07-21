@@ -1,18 +1,14 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
-import cadquery as cq
-import tempfile
-import os
+from typing import Any
 
 app = FastAPI(
     title="Niblet CAD API",
-    version="1.0.0"
+    version="2.0.0"
 )
 
-class GenerateRequest(BaseModel):
-    product: str
-    subject: str
-    style: str = "default"
+class DesignRequest(BaseModel):
+    design: dict[str, Any]
 
 @app.get("/")
 def root():
@@ -22,25 +18,14 @@ def root():
     }
 
 @app.post("/generate")
-def generate(request: GenerateRequest):
+def generate(request: DesignRequest):
 
-    model = (
-        cq.Workplane("XY")
-        .box(18, 18, 5)
-    )
+    design = request.design
 
-    temp_dir = tempfile.gettempdir()
-    filename = f"{request.subject}_{request.product}.stl"
-    filepath = os.path.join(temp_dir, filename)
-
-    cq.exporters.export(model, filepath)
+    # Later this entire dictionary goes into CadQuery
 
     return {
         "success": True,
-        "message": "STL generated successfully.",
-        "product": request.product,
-        "subject": request.subject,
-        "style": request.style,
-        "stl_created": True,
-        "stl_path": filepath
+        "message": "Design specification received.",
+        "design": design
     }
