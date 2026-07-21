@@ -1,14 +1,15 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
-from typing import Any
 
 app = FastAPI(
     title="Niblet CAD API",
     version="2.0.0"
 )
 
-class DesignRequest(BaseModel):
-    design: dict[str, Any]
+class GenerateRequest(BaseModel):
+    product: str
+    subject: str
+    style: str = "default"
 
 @app.get("/")
 def root():
@@ -18,14 +19,12 @@ def root():
     }
 
 @app.post("/generate")
-def generate(request: DesignRequest):
-
-    design = request.design
-
-    # Later this entire dictionary goes into CadQuery
+def generate(request: GenerateRequest):
 
     return {
         "success": True,
-        "message": "Design specification received.",
-        "design": design
+        "message": "Request received.",
+        "product": request.product,
+        "subject": request.subject,
+        "style": request.style
     }
