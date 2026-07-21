@@ -1,2 +1,5 @@
 fastapi
 uvicorn
+cadquery
+cadquery-ocp
+numpy
