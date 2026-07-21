@@ -24,7 +24,6 @@ def root():
 @app.post("/generate")
 def generate(request: GenerateRequest):
 
-    # Temporary test STL
     model = (
         cq.Workplane("XY")
         .box(18, 18, 5)
@@ -38,6 +37,7 @@ def generate(request: GenerateRequest):
 
     return {
         "success": True,
+        "message": "STL generated successfully.",
         "product": request.product,
         "subject": request.subject,
         "style": request.style,
